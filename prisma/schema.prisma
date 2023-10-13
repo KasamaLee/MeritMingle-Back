@@ -10,53 +10,105 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ProductType {
+  MAIN
+  MONK
+  ADD_ON
+}
+
+enum PaymentType {
+  CREDIT_CARD
+  QR_CODE
+}
+
 model User {
-  id        Int     @id @default(autoincrement())
-  firstName String
-  lastName  String
-  email     String? @unique
-  mobile    String  @unique
-  password  String
-  Order     Order[]
+  id           Int     @id @default(autoincrement())
+  firstName    String
+  lastName     String
+  email        String  @unique
+  mobile       String  @unique
+  password     String
+  profileImage String?
+  role         Role
+  Order        Order[]
+  Cart         Cart[]
 }
 
 model Product {
-  id        Int         @id @default(autoincrement())
-  name      String      @unique
-  price     String
-  desc      String?
-  OrderItem OrderItem[]
-  CartItem  CartItem[]
+  id           Int         @id @default(autoincrement())
+  name         String      @unique
+  price        Int
+  desc         String?
+  productImage String?
+  type         ProductType
+  OrderItem    OrderItem[]
+  CartItem     CartItem[]
 }
 
 model Order {
-  id        Int         @id @default(autoincrement())
-  date      DateTime    @default(now())
-  userId    Int
-  user      User        @relation(fields: [userId], references: [id])
-  OrderItem OrderItem[]
+  id         Int         @id @default(autoincrement())
+  createdAt  DateTime    @default(now())
+  totalPrice Int
+  userId     Int
+  user       User        @relation(fields: [userId], references: [id])
+  OrderItem  OrderItem[]
 }
 
 model OrderItem {
   id         Int      @id @default(autoincrement())
-  totalPrice Int
-  addOn      Boolean?
   eventDate  DateTime
-  monk       String
-  monkPrice  String
+  amount     Int
+  totalPrice Int
   productId  Int
   product    Product  @relation(fields: [productId], references: [id])
+  locationId Int
+  location   Location @relation(fields: [locationId], references: [id])
+  paymentId  Int
+  payment    Payment  @relation(fields: [paymentId], references: [id])
   orderId    Int
   order      Order    @relation(fields: [orderId], references: [id])
 }
 
+model Cart {
+  id         Int        @id @default(autoincrement())
+  createdAt  DateTime   @default(now())
+  totalPrice Int
+  userId     Int
+  user       User       @relation(fields: [userId], references: [id])
+  CartItem   CartItem[]
+}
+
 model CartItem {
   id         Int      @id @default(autoincrement())
-  totalPrice Int
-  addOn      Boolean?
   eventDate  DateTime
-  monk       String
-  monkPrice  String
+  amount     Int
+  totalPrice Int
   productId  Int
   product    Product  @relation(fields: [productId], references: [id])
+  locationId Int
+  location   Location @relation(fields: [locationId], references: [id])
+  cartId     Int
+  cart       Cart     @relation(fields: [cartId], references: [id])
+}
+
+model Location {
+  id        Int         @id @default(autoincrement())
+  lat       String
+  lng       String
+  address   String?
+  OrderItem OrderItem[]
+  CartItem  CartItem[]
+}
+
+model Payment {
+  id        Int         @id @default(autoincrement())
+  type      PaymentType
+  status    Boolean     @default(false)
+  slipURL   String?
+  OrderItem OrderItem[]
 }
