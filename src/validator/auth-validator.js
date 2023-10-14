@@ -22,8 +22,8 @@ exports.registerSchema = Joi.object({
 })
 
 exports.loginSchema = Joi.object({
-    email: Joi.string()
-        .trim()
+    email: Joi.string()     
+    .trim()
         .email({
             tlds: { allow: ['com', 'net'] }
         }),

@@ -4,6 +4,8 @@ const cors = require('cors');
 const morgan = require('morgan');
 
 const authRoute = require('./routes/authRoute')
+const productRoute = require('./routes/productRoute')
+const cartRoute = require('./routes/cartRoute')
 
 // ---- APP ----
 const app = express()
@@ -17,13 +19,15 @@ app.use(express.urlencoded({ extended: false }));
 
 // ---- ROUTE ----
 app.use('/auth', authRoute)
-// app.use('/product')
+app.use('/product', productRoute)
+app.use('/cart', cartRoute)
 // app.use('/admin')
 // app.use('/user')
 
 // ---- ERROR ----
 // const notFoundMiddleware =require('./middlewares/not-found');
 const errorMiddleware = require ('./middlewares/error');
+const { product } = require('./models/prisma');
 
 app.use(errorMiddleware)
 
