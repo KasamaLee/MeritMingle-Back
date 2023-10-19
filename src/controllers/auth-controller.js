@@ -5,7 +5,7 @@ const prisma = require('../models/prisma');
 const { registerSchema, loginSchema } = require('../validator/auth-validator');
 
 const generateToken = (payload) => {
-    const accessToken = jwt.sign(payload, process.env.SECRET_KEY, {
+    const accessToken = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
         expiresIn: process.env.JWT_EXPIRE
     });
     // console.log(accessToken);
@@ -29,6 +29,7 @@ exports.register = async (req, res, next) => {
 
         value.password = hashedPassword;
         value.role = process.env.REGISTER_USER;
+        // value.role = 'ADMIN';
 
         const user = await prisma.user.create({
             data: value
@@ -40,6 +41,8 @@ exports.register = async (req, res, next) => {
         }
 
         const accessToken = generateToken(payload);
+
+        delete user.password;
 
         res.status(200).json({ accessToken, user })
 
@@ -83,10 +86,17 @@ exports.login = async (req, res, next) => {
         }
 
         const accessToken = generateToken(payload);
+
+        delete user.password;
+
         res.status(200).json({ accessToken, user })
 
     } catch (err) {
         next(err)
 
     }
+}
+
+exports.getMe = async (req, res, next) => {
+    res.status(200).json({ user: req.user })
 }

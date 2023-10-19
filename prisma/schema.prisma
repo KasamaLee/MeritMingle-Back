@@ -56,11 +56,11 @@ model Order {
   eventDate  DateTime
   totalPrice Int
   userId     Int
-  user       User        @relation(fields: [userId], references: [id])
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   locationId Int
-  location   Location    @relation(fields: [locationId], references: [id])
+  location   Location    @relation(fields: [locationId], references: [id], onDelete: Cascade)
   paymentId  Int
-  payment    Payment     @relation(fields: [paymentId], references: [id])
+  payment    Payment     @relation(fields: [paymentId], references: [id], onDelete: Cascade)
   OrderItem  OrderItem[]
 }
 
@@ -69,9 +69,9 @@ model OrderItem {
   amount     Int
   totalPrice Int
   productId  Int
-  product    Product @relation(fields: [productId], references: [id])
+  product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   orderId    Int
-  order      Order   @relation(fields: [orderId], references: [id])
+  order      Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 model Cart {
@@ -80,9 +80,9 @@ model Cart {
   eventDate  DateTime
   totalPrice Int
   userId     Int
-  user       User       @relation(fields: [userId], references: [id])
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   locationId Int
-  location   Location   @relation(fields: [locationId], references: [id])
+  location   Location   @relation(fields: [locationId], references: [id], onDelete: Cascade)
   CartItem   CartItem[]
 }
 
@@ -91,15 +91,15 @@ model CartItem {
   amount     Int
   totalPrice Int
   productId  Int
-  product    Product @relation(fields: [productId], references: [id])
+  product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   cartId     Int
-  cart       Cart    @relation(fields: [cartId], references: [id])
+  cart       Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
 }
 
 model Location {
   id      Int     @id @default(autoincrement())
-  lat     String
-  lng     String
+  lat     Float
+  lng     Float
   address String?
   Cart    Cart[]
   Order   Order[]

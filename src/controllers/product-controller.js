@@ -1,11 +1,10 @@
 const prisma = require('../models/prisma')
 
-
 exports.addProduct = async (req, res, next) => {
     try {
 
         const body = req.body
-        console.log(body)
+        // console.log(body)
 
         const product = await prisma.product.create({
             data: {
@@ -20,6 +19,23 @@ exports.addProduct = async (req, res, next) => {
 
     } catch (err) {
         console.log(err)
+        next(err)
+    }
+}
+
+exports.deleteProduct = async (req, res, next) => {
+
+    try {
+        const { id } = req.params;
+        const result = await prisma.product.delete({
+            where: {
+                id: parseInt(id, 10)
+            }
+        });
+
+        res.status(200).json({ result })
+    }
+    catch (err) {
         next(err)
     }
 }
