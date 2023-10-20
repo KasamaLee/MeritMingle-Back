@@ -88,6 +88,8 @@ exports.updateCart = async (req, res, next) => {
         const { id } = req.params;
         const body = req.body;
 
+        console.log(body)
+
         // Delete all existing CartItem entries associated with the cart
         await prisma.cartItem.deleteMany({
             where: {
@@ -172,6 +174,7 @@ exports.getCartById = async (req, res, next) => {
                 id: +id
             },
             include: {
+                location: true,
                 CartItem: {
                     include: {
                         product: true
@@ -183,7 +186,7 @@ exports.getCartById = async (req, res, next) => {
         res.status(200).json({cart})
 
     } catch (err) {
-        // console.log(err)
+        console.log(err)
         next(err)
     }
 }
