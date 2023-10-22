@@ -43,7 +43,7 @@ model Product {
   id           Int         @id @default(autoincrement())
   name         String      @unique
   price        Int
-  desc         String?
+  desc         String?     @db.LongText
   productImage String?
   type         ProductType
   OrderItem    OrderItem[]

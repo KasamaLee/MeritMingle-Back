@@ -6,7 +6,6 @@ const morgan = require('morgan');
 const authRoute = require('./routes/authRoute')
 const productRoute = require('./routes/productRoute')
 const cartRoute = require('./routes/cartRoute')
-const paymentRoute = require('./routes/paymentRoute')
 const orderRoute = require('./routes/orderRoute')
 
 // ---- APP ----
@@ -23,7 +22,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/auth', authRoute)
 app.use('/product', productRoute)
 app.use('/cart', cartRoute)
-app.use('/payment', paymentRoute)
+// app.use('/payment', paymentRoute)
 app.use('/order', orderRoute)
 // app.use('/admin')
 // app.use('/user')
