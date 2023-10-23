@@ -74,6 +74,7 @@ exports.updateProduct = async (req, res, next) => {
     }
 }
 
+
 exports.deleteProduct = async (req, res, next) => {
 
     try {
