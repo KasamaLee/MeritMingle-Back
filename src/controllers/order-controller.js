@@ -52,8 +52,6 @@ exports.addOrder = async (req, res, next) => {
 
         }
 
-
-
         const order = await prisma.order.findMany({
             where: {
                 paymentId: payment.id

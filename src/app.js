@@ -30,7 +30,7 @@ app.use('/order', orderRoute)
 // ---- ERROR ----
 // const notFoundMiddleware =require('./middlewares/not-found');
 const errorMiddleware = require ('./middlewares/error');
-const { product, payment } = require('./models/prisma');
+// const { product, payment } = require('./models/prisma');
 
 app.use(errorMiddleware)
 
