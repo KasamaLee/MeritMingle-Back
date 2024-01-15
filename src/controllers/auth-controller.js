@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const prisma = require('../models/prisma');
-const { registerSchema, loginSchema } = require('../validator/auth-validator');
+const { registerSchema, loginSchema, googleSchema } = require('../validator/auth-validator');
 
 const generateToken = (payload) => {
     const accessToken = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
@@ -94,6 +94,57 @@ exports.login = async (req, res, next) => {
     } catch (err) {
         next(err)
 
+    }
+}
+
+exports.google = async (req, res, next) => {
+    try {
+        const reqBody = req.body;
+        const { error, value } = googleSchema.validate(reqBody);
+        // console.log(value)
+        // console.log(error)
+
+        if (error) {
+            return res.json({ msg: "Google Login Failed" })
+        }
+
+        const existedGoogleUser = await prisma.user.findFirst({
+            where: {
+                googleId: value.googleId
+            }
+        })
+
+        // ### Register ###
+        if (existedGoogleUser) {
+            const payload = {
+                userId: existedGoogleUser.id,
+                role: existedGoogleUser.role
+            }
+            const accessToken = generateToken(payload);
+            const user = existedGoogleUser;
+            delete user.googleId
+            delete user.password
+            return res.status(200).json({ user, accessToken })
+        }
+
+        // ### Login ###
+        value.role = process.env.REGISTER_USER  // role = 'USER'
+        const googleUser = await prisma.user.create({
+            data: value
+        })
+        delete googleUser.googleId
+        delete googleUser.password
+
+        const payload = {
+            userId: googleUser.id,
+            role: googleUser.role
+        }
+        const accessToken = generateToken(payload);
+        res.status(200).json({ accessToken, googleUser })
+
+    } catch (err) {
+        console.log(err)
+        next(err)
     }
 }
 

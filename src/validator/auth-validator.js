@@ -30,3 +30,9 @@ exports.loginSchema = Joi.object({
     password: Joi.string().required()
 });
 
+exports.googleSchema = Joi.object({
+    firstName: Joi.string(),
+    lastName: Joi.string(),
+    email: Joi.string().email().required(),
+    googleId: Joi.string().required(),
+})

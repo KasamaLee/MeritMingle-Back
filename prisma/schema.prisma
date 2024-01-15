@@ -31,8 +31,9 @@ model User {
   firstName    String
   lastName     String
   email        String  @unique
-  mobile       String  @unique
-  password     String
+  mobile       String?  @unique
+  password     String?
+  googleId     String?
   profileImage String?
   role         Role
   Order        Order[]
