@@ -11,6 +11,7 @@ const authenticateMiddleware = require('../middlewares/authenticate')
 router.post('/register', authController.register)
 router.post('/login', authController.login)
 router.post('/google', authController.google)
+router.patch('/update', authenticateMiddleware, authController.updateProfile)
 router.get('/me', authenticateMiddleware , authController.getMe)
 
 

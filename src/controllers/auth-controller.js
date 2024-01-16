@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const prisma = require('../models/prisma');
-const { registerSchema, loginSchema, googleSchema } = require('../validator/auth-validator');
+const { registerSchema, loginSchema, googleSchema, profileSchema } = require('../validator/auth-validator');
 
 const generateToken = (payload) => {
     const accessToken = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
@@ -49,6 +49,61 @@ exports.register = async (req, res, next) => {
     } catch (err) {
         // next(err);
         res.status(500).json(err)
+    }
+}
+
+exports.updateProfile = async (req, res, next) => {
+    try {
+
+        const body = req.body
+        const { error, value } = profileSchema.validate(body);
+
+        if (error) {
+            return res.json({ error })
+        }
+
+        console.log('first', req.user)
+
+        const user = await prisma.user.update({
+            where: {
+                id: req.user.id
+            },
+            data: value
+        });
+
+        console.log(user)
+        res.status(200).json({ user })
+    } catch (err) {
+        console.log(err)
+        next(err)
+    }
+}
+
+exports.updatePassword = async (req, res, next) => {
+    try {
+
+        const body = req.body
+        const { error, value } = registerSchema.validate(body);
+
+        if (error) {
+            return res.json({ error })
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { id: req.user.id }
+        })
+
+        const isMatched = await bcrypt.compare(value.password, user.password)
+
+        if (!isMatched) {
+            // throw new Error('not matched')
+            return res.status(500).json({ msg: 'the old password does not correct' })
+        }
+
+
+    } catch (err) {
+        console.log(err)
+        next(err)
     }
 }
 

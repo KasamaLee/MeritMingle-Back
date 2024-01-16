@@ -16,14 +16,25 @@ exports.registerSchema = Joi.object({
         .email({
             tlds: { allow: ['com', 'net'] }
         }),
-    mobile: Joi.string()
-        .pattern(/^[0-9]{10}$/)
-        .required(),
+    mobile: Joi.string().pattern(/^[0-9]{10}$/).allow('')
 })
 
+exports.profileSchema = Joi.object(
+    {
+        firstName: Joi.string().trim().required(),
+        lastName: Joi.string().trim().required(),
+        email: Joi.string()
+            .trim()
+            .email({
+                tlds: { allow: ['com', 'net'] }
+            }),
+        mobile: Joi.string().pattern(/^[0-9]{10}$/).allow('')
+    }
+)
+
 exports.loginSchema = Joi.object({
-    email: Joi.string()     
-    .trim()
+    email: Joi.string()
+        .trim()
         .email({
             tlds: { allow: ['com', 'net'] }
         }),
