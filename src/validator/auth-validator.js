@@ -32,6 +32,21 @@ exports.profileSchema = Joi.object(
     }
 )
 
+exports.passwordSchema = Joi.object(
+    {
+        oldPassword: Joi.string().pattern(/^[a-zA-Z0-9]{6,30}$/)
+            .trim()
+            .required(),
+        newPassword: Joi.string().pattern(/^[a-zA-Z0-9]{6,30}$/)
+            .trim()
+            .required(),
+        confirmPassword: Joi.string().valid(Joi.ref('newPassword'))
+            .trim()
+            .required()
+            .strip()
+    }
+)
+
 exports.loginSchema = Joi.object({
     email: Joi.string()
         .trim()
